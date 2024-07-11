@@ -15,31 +15,27 @@ while (true)
 {
     var input = Console.ReadLine();
 
-    // TODO Wired up basic commands just to get the flow working. This will be replaced with something more robust.
-    // I was thinking to create a inputcommand class, that is furnished with data from the input command and then
-    // could be easily switched over. Ex: InputCommand.Follow -> would trigger followCommand path.
-
     if (input != null)
     {
-        var inputCommand = Parser.ParseInputCommand(input); // Not currently implemented.
+        var inputCommand = Parser.ParseInputCommand(input);
 
-        switch (input)
+        // Test *all* criteria for a post message command.
+        if (
+            inputCommand.MessageText != String.Empty &&
+            inputCommand.UserName != String.Empty &&
+            inputCommand.TimeStamp != null
+            )
         {
-            case "Follow":
-                invoker.SetCommand(followCommand);
-                break;
-            case "Wall":
-                invoker.SetCommand(wallCommand);
-                break;
-            case "Post":
-                invoker.SetCommand(postCommand);
-                break;
-            case "Read":
-                invoker.SetCommand(readCommand);
-                break;
-            default:
-                break;
+            invoker.SetCommand(postCommand);
         }
+
+        else if(inputCommand.DisplayWall) invoker.SetCommand(wallCommand);
+
+        else if (inputCommand.Following) invoker.SetCommand(followCommand);
+
+        // Will execute for any single word entry into the console which is desired.
+        // The word will either be a recorded valid project name or will not be found.
+        else if (inputCommand.ProjectName != String.Empty) invoker.SetCommand(readCommand);
 
         invoker.ExecuteCommand(inputCommand);
     }

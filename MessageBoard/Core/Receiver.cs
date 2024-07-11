@@ -10,11 +10,11 @@ namespace MessageBoard.Core
 
     public class Receiver
     {
-        private readonly bool isDebugEnabled = false;
+        private readonly bool isDebugEnabled = true;
         private readonly Dictionary<string, List<string>> userFollowing = [];
         private readonly Dictionary<string, List<Message>> projectMessages = [];
 
-        public void PostMessage(InputCommand inputCommand)
+        public void PostMessage(CommandData inputCommand)
         {
             if (isDebugEnabled) Console.WriteLine($"Called PostMessage/1 with command:{Environment.NewLine}{inputCommand}");
 
@@ -32,7 +32,7 @@ namespace MessageBoard.Core
             });
         }
 
-        public void FollowProject(InputCommand inputCommand)
+        public void FollowProject(CommandData inputCommand)
         {
             if (isDebugEnabled) Console.WriteLine($"Called FollowProject/1 with command:{Environment.NewLine}{inputCommand}");
 
@@ -45,7 +45,7 @@ namespace MessageBoard.Core
             projects.Add(inputCommand.ProjectName);
         }
 
-        public void DisplayWall(InputCommand inputCommand)
+        public void DisplayWall(CommandData inputCommand)
         {
             if (isDebugEnabled) Console.WriteLine($"Called DisplayWall/1 with command:{Environment.NewLine}{inputCommand}");
 
@@ -67,15 +67,21 @@ namespace MessageBoard.Core
             }
         }
 
-        public void ReadProjectMessages(InputCommand inputCommand)
+        public void ReadProjectMessages(CommandData inputCommand)
         {
             if (isDebugEnabled) Console.WriteLine($"Called ReadProjectMessages/1 with command:{Environment.NewLine}{inputCommand}");
 
             if (projectMessages.TryGetValue(inputCommand.ProjectName, out var messages))
             {
+                string currentUser = String.Empty; // Important to keep track of the current user to avoid repeating their username.
                 foreach (var message in messages)
                 {
-                    Console.WriteLine(message.Text);
+                    if(message.User != currentUser) Console.WriteLine($"{message.User}{Environment.NewLine}{message.Text}");
+                    else
+                    {
+                        Console.WriteLine(message.Text);
+                    }
+                    currentUser = message.User;
                 }
             }
         }

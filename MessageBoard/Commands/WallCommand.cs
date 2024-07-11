@@ -4,7 +4,7 @@ namespace MessageBoard.Commands
 {
     internal class WallCommand(Receiver receiver) : Command(receiver)
     {
-        public override void Execute(InputCommand inputCommand)
+        public override void Execute(CommandData inputCommand)
         {
             receiver.DisplayWall(inputCommand);
         }

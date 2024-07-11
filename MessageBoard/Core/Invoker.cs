@@ -12,9 +12,10 @@ namespace MessageBoard.Core
             this.command = command;
         }
 
-        public void ExecuteCommand(InputCommand inputCommand)
+        public void ExecuteCommand(CommandData inputCommand)
         {
             command?.Execute(inputCommand);
+            command = null;
         }
     }
 }

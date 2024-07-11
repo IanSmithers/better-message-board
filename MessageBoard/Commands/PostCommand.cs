@@ -4,7 +4,7 @@ namespace MessageBoard.Commands
 {
     internal class PostCommand(Receiver receiver) : Command(receiver)
     {
-        public override void Execute(InputCommand inputCommand)
+        public override void Execute(CommandData inputCommand)
         {
             receiver.PostMessage(inputCommand);
         }
