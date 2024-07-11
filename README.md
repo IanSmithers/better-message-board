@@ -44,7 +44,7 @@ To exit press `CTRL C` then any key.
 
 ## Contributing
 
-Feel free to dive in! [Open an issue](https://github.com/IanSmithers/message-board/issues)
+Feel free to dive in! [Open an issue](https://github.com/IanSmithers/better-message-board/issues)
 
 ## License
 
