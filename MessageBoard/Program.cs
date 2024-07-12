@@ -2,14 +2,19 @@
 
 using MessageBoard.Commands;
 using MessageBoard.Core;
+using MessageBoard.Data;
 
-Invoker invoker = new();
-Receiver receiver = new();
+Store store = new();
+ReaderService reader = new(store);
+WriterService writer = new(store);
+Receiver receiver = new(reader, writer);
 
 Command followCommand = new FollowCommand(receiver);
 Command postCommand = new PostCommand(receiver);
 Command readCommand = new ReadCommand(receiver);
 Command wallCommand = new WallCommand(receiver);
+
+Invoker invoker = new();
 
 while (true)
 {

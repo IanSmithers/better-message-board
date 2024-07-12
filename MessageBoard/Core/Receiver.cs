@@ -1,31 +1,19 @@
-﻿
+﻿using MessageBoard.Data;
+using static MessageBoard.Data.Store;
+
 namespace MessageBoard.Core
 {
-    struct Message
-    {
-        public string User {  get; set; }
-        public string Text { get; set; }
-        public DateTime TimeStamp { get; set; }
-        public string Project { get; set; }
-    }
-
-    public class Receiver
+    public class Receiver(ReaderService reader, WriterService writer)
     {
         private readonly bool isDebugEnabled = true;
-        private readonly Dictionary<string, List<string>> userFollowing = [];
-        private readonly Dictionary<string, List<Message>> projectMessages = [];
+        private readonly ReaderService reader = reader;
+        private readonly WriterService writer = writer;
 
         public void PostMessage(CommandData inputCommand)
         {
             if (isDebugEnabled) Console.WriteLine($"Called PostMessage/1 with command:{Environment.NewLine}{inputCommand}");
 
-            if (!projectMessages.TryGetValue(inputCommand.ProjectName, out List<Message>? messages))
-            {
-                messages = [];
-                projectMessages.Add(inputCommand.ProjectName, messages);
-            }
-
-            messages.Add(new Message()
+            writer.AddNewMessage(new Message()
             {
                 User = inputCommand.UserName,
                 Text = inputCommand.MessageText,
@@ -38,31 +26,18 @@ namespace MessageBoard.Core
         {
             if (isDebugEnabled) Console.WriteLine($"Called FollowProject/1 with command:{Environment.NewLine}{inputCommand}");
 
-            if (!userFollowing.TryGetValue(inputCommand.UserName, out List<string>? projects))
-            {
-                projects = [];
-                userFollowing.Add(inputCommand.UserName, projects);
-            }
-
-            projects.Add(inputCommand.ProjectName);
+            writer.AddUserToProjectFollowing(inputCommand.UserName, inputCommand.ProjectName);
         }
 
         public void DisplayWall(CommandData inputCommand)
         {
             if (isDebugEnabled) Console.WriteLine($"Called DisplayWall/1 with command:{Environment.NewLine}{inputCommand}");
 
-            if (userFollowing.TryGetValue(inputCommand.UserName, out var projects))
-            {
-                var allMessages = new List<Message>();
-                foreach (var projectName in projects)
-                {
-                    if (projectMessages.TryGetValue(projectName, out var messages))
-                    {
-                        allMessages.AddRange(messages);
-                    }
-                }
+            var allMessages = reader.GetMessagesForAllProjectsUserIsFollowing(inputCommand.UserName);
 
-                foreach (var message in allMessages.OrderBy(msg => msg.TimeStamp))
+            if (allMessages != null)
+            {
+                foreach (var message in allMessages)
                 {
                     Console.WriteLine($"{message.Project} - {message.User}: {message.Text}");
                 }
@@ -73,12 +48,14 @@ namespace MessageBoard.Core
         {
             if (isDebugEnabled) Console.WriteLine($"Called ReadProjectMessages/1 with command:{Environment.NewLine}{inputCommand}");
 
-            if (projectMessages.TryGetValue(inputCommand.ProjectName, out var messages))
+            var messages = reader.GetMessagesForProject(inputCommand.ProjectName);
+
+            if (messages != null)
             {
                 string currentUser = String.Empty; // Important to keep track of the current user to avoid repeating their username.
                 foreach (var message in messages)
                 {
-                    if(message.User != currentUser) Console.WriteLine($"{message.User}{Environment.NewLine}{message.Text}");
+                    if (message.User != currentUser) Console.WriteLine($"{message.User}{Environment.NewLine}{message.Text}");
                     else
                     {
                         Console.WriteLine(message.Text);
