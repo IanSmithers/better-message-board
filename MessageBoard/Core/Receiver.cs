@@ -6,6 +6,7 @@ namespace MessageBoard.Core
         public string User {  get; set; }
         public string Text { get; set; }
         public DateTime TimeStamp { get; set; }
+        public string Project { get; set; }
     }
 
     public class Receiver
@@ -28,6 +29,7 @@ namespace MessageBoard.Core
             {
                 User = inputCommand.UserName,
                 Text = inputCommand.MessageText,
+                Project = inputCommand.ProjectName,
                 TimeStamp = DateTime.Now,
             });
         }
@@ -62,7 +64,7 @@ namespace MessageBoard.Core
 
                 foreach (var message in allMessages.OrderBy(msg => msg.TimeStamp))
                 {
-                    Console.WriteLine(message.Text);
+                    Console.WriteLine($"{message.Project} - {message.User}: {message.Text}");
                 }
             }
         }

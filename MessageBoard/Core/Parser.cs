@@ -40,14 +40,9 @@
 
         private static void SetUserName(string inputCommand, CommandData commandData)
         {
-            // Is this a message command that contains the user?
-            int position = inputCommand.IndexOf("->");
-            if (position > 0)
-            {
-                // The user is the first word before the arrow.
-                string[] parts = inputCommand.Split("->");
-                commandData.UserName = parts[0].Trim();
-            }
+            // The username is always the first word in a multi-word command.
+            string[] parts = inputCommand.Split(' ');
+            if (parts.Length > 1) commandData.UserName = parts[0].Trim();
         }
 
         private static void SetMessageText(string inputCommand, CommandData commandData)
@@ -81,7 +76,9 @@
             }
             else // Or without an @ prefix?
             {
-                if (inputCommand.Split(' ').Length == 1) commandData.ProjectName = inputCommand.Trim();
+                string[] parts = inputCommand.Split(' ');
+                if (parts.Length == 1) commandData.ProjectName = inputCommand.Trim(); // Reading the project messages.
+                else if (parts.Length == 3) commandData.ProjectName = parts[2].Trim(); // Following a project.
             }
         }
 
