@@ -12,7 +12,7 @@
 
 ## Background
 
-This is a better submission for the Message Board coding test. I did not finish the command parsing entirely, but there is a stub in place that shows where I was going.
+This is a submission for the Message Board coding test.
 
 
 The project was built with Visual Studio 2022 and no external packages.
@@ -48,4 +48,4 @@ Feel free to dive in! [Open an issue](https://github.com/IanSmithers/better-mess
 
 ## License
 
-[MIT] © Ian Smithers
+[MIT] Â© Ian Smithers
